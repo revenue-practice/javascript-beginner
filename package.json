@@ -1,0 +1,23 @@
+{
+  "name": "javascript-beginner",
+  "version": "1.0.0",
+  "description": "Short programs which helps understand javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revenue-practice/javascript-beginner.git"
+  },
+  "keywords": [
+    "javascript",
+    "nodeJS"
+  ],
+  "author": "Developer Riyansh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revenue-practice/javascript-beginner/issues"
+  },
+  "homepage": "https://github.com/revenue-practice/javascript-beginner#readme"
+}
