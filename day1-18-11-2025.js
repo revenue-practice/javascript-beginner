@@ -17,6 +17,7 @@ let fruits = ["orange", "apple", "kiwi"];
 
 console.log(5 !== "5");
 
+let age = 20;
 if(age >= 18) console.log("Adult");
 else console.log("Minor");
 
