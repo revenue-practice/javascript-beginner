@@ -1,0 +1,14 @@
+{
+  "name": "express-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "day7-24-11-2025.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "\"Developer riyansh\"",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
