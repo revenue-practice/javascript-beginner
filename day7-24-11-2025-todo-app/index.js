@@ -34,6 +34,7 @@ app.post('/task/create', (req, res) => {
             fName: fName,
             task: task
         });
+        counter += 1;
 
         res.status(201).json({
             fName: fName, 
