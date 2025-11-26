@@ -1,5 +1,6 @@
 const express = require('express');
 const { Pool } = require('pg');
+const { isValidValue, isValidInteger } = require('./helper');
 const app = express();
 
 const pool = new Pool({
@@ -38,31 +39,31 @@ app.post('/user', async (req, res) => {
 
 app.get('/users', async (req, res) => {
     try {
-        const queryString = `SELECT (name, email, age) FROM ${usersDB} LIMIT 10`;
+        const queryString = `SELECT name, email, age FROM ${usersDB} LIMIT 10`;
         const result = await pool.query(queryString);
 
-        // const sanitiseResult = result.map((val) => {
-        //     return {
-        //         fName: val.name,
-        //         email: val.email,
-        //         age: val.age
-        //     }
-        // });
+        const sanitisedResult = result.rows.map((val) => {
+            return {
+                fName: val.name,
+                email: val.email,
+                age: val.age
+            }
+        });
 
-        res.status(200).json(result.rows);
+        res.status(200).json(sanitisedResult);
     }
     catch (error) {
         res.status(500).send('Internal server error');
     }
 });
 
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:email', async (req, res) => {
     try {
-        const queryString = `SELECT * FROM ${usersDB} where email = $1 RETURNING (name, age) LIMIT 1`;
-        const result = await pool.query(queryString, [req.params.id]);
+        const queryString = `SELECT name, age FROM ${usersDB} where email = $1 LIMIT 1`;
+        const result = await pool.query(queryString, [req.params.email]);
         
         if(result.rows.length) {
-            return res.status(200).json(result);
+            return res.status(200).json(result.rows[0]);
         }
         res.status(404).send('No user found');
     }
@@ -71,14 +72,29 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-/*
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:email', async (req, res) => {
     try {
-        const queryString = `UPDATE  ${usersDB} where id = $1 RETURNING (name, email, age) LIMIT 1`;
-        const result = await pool.query(queryString, [req.params.id]);
+        const { name: fName, age: uAge } = req.body;
+
+        let baseQueryString = `UPDATE ${usersDB} SET `;
+        let counterParam = 1, queryParams = [];
+
+        if(isValidValue(fName)) {
+            baseQueryString += `name = $${counterParam}, `;
+            counterParam += 1; queryParams.push(fName);
+        }
+        if(isValidInteger(uAge)) {
+            baseQueryString += `age = $${counterParam} `;
+            counterParam += 1; queryParams.push(uAge);
+        }
+
+        baseQueryString += `WHERE email = $${counterParam}`;
+
+        if(isValidValue(req.params.email)) queryParams.push(req.params.email);
+        const result = await pool.query(baseQueryString, queryParams);
         
-        if(result.rows.length) {
-            return res.status(200).json(result);
+        if(result.rowCount) {
+            return res.status(200).json('Record updated');
         }
         res.status(404).send('No user found');
     }
@@ -87,13 +103,13 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 
-app.delete('/users/:id', async (req, res) => {
+app.delete('/users/:email', async (req, res) => {
     try {
-        const queryString = `SELECT * FROM ${usersDB} where id = $1 RETURNING (name, email, age) LIMIT 1`;
-        const result = await pool.query(queryString, [req.params.id]);
+        const queryString = `DELETE FROM ${usersDB} where email = $1`;
+        const result = await pool.query(queryString, [req.params.email]);
         
-        if(result.rows.length) {
-            return res.status(200).json(result);
+        if(result.rowCount) {
+            return res.status(200).json('Record deleted successfully');
         }
         res.status(404).send('No user found');
     }
@@ -101,7 +117,6 @@ app.delete('/users/:id', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
-*/
 
 app.listen(PORT, () => {
     console.log(`Server connected on PORT ${PORT}`);
