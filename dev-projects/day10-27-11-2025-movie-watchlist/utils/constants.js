@@ -15,7 +15,6 @@ const suffixMessages = {
 
 const dbTables = {
     movies: 'MOVIES',
-    reviews: 'REVIEWS'
 };
 
 module.exports = {
