@@ -1,12 +1,13 @@
 {
-  "name": "day9-26-11-2025-products-app",
+  "name": "day10-27-11-2025-movie-watchlist",
   "version": "1.0.0",
   "description": "",
-  "main": "helper.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "keywords": [],
   "author": "Developer Riyansh",
   "license": "ISC"
 }
